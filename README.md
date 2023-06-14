@@ -1,6 +1,6 @@
-# Propylon Document Manager
+# Propylon Document Manager Assessment
 
-Propylon Document Management Technical Assessment
+The Propylon Document Management Technical Assessment is a simple (and incomplete) web application consisting of a basic API backend and a React based client.  This API/client can be used as a bootstrap to implement the specific features requested in the assessment description. 
 
 ## Getting Started
 1. [Install Direnv](https://direnv.net/docs/installation.html)
@@ -8,24 +8,13 @@ Propylon Document Management Technical Assessment
 3. This project requires Python 3.11 so you will need to ensure that this version of Python is installed on your OS before building the virtual environment.
 4. `$ cp example.env .envrc`
 5. `$ direnv allow .`
-6. `$ pipenv install -r requirements/local.txt`
-
-## Events System 
-This repository is setup to use the LWB360 Events system.
-The events system can be run locally via a checked out version via docker.  Or can be run with the latest published events system docker image. 
-See the `example.env` for the environment variables that inform the location of the event system code. 
-
-### Initializing the LWB360 Events System
-1. `docker-compose --profile up` will control which events application profile you would like to start in.  `events_app` profile will load the docker from the latest published container image.  `events_dev` will load the docker container using a local copy of the events system source.
-2. Navigate to the [admin site](http://localhost:8008/admin/) for the event system.  Have a look at the lwb360-events code for default admin username and password.  Navigate to the tokens area of the panel.
-3. Copy the token/key of the initial entry for `lwb360.event_log` into your `.envrc` file, assigning the value to `LWB360_EVENTS_APP_TOKEN`.
-### Create Test Events
-1. Run the `register_app` management command through either the [launch.json](.vscode/launch.json) file or the [Makefile](Makefile) target.  This will register the bootstrap application with the event system.
-2. Run the `create_debug_event` management command through either the [launch.json](.vscode/launch.json) file or the [Makefile](Makefile) target. This will create a demonstration `EventRecord`.  You will see more data now in the events sytem admin including new [EventRecord](http://localhost:8008/admin/lwb360_events/eventrecord/) entries.
-### Create and Test Subscription
-1. Use the events system Django admin to [create a new subscription](http://localhost:8008/admin/lwb360_events/subscription/add/).  Select the newly registered application as the subscriber, the `lwb360.drafting.drafting_test` as the topic, and `http://host.docker.internal:8001/debug-event/` as the callback url, which is the only endpoint available in the [views.py](src/lwb360_ib/api/views.py) file.
-2. Run the `serve` command through either the [launch.json](.vscode/launch.json) file or the [Makefile](Makefile) target.  This will start the bootstrap application.
-3. Run the `create_debug_event` management command through either the [launch.json](.vscode/launch.json) file or the [Makefile](Makefile) target. This should result in the event information being echoed in the console log of this application. 
+6. `$ pipenv install -r requirements/local.txt`.  If Python 3.11 is not the default Python version on your system you may need to explicitly create the virtual environment (`$ python3.11 -m venv .venv`) prior to running the install command. 
+7. `$ pipenv run python manage.py migrate` to create the database.
+8. `$ pipenv run python manage.py load_file_fixtures` to create the fixture file versions.
+9. `$ pipenv run python manage.py runserver 0.0.0.0:8001` to start the development server on port 8001.
+10. Navigate to the client/doc-manager directory.
+11. `$ npm install` to install the dependencies.
+12. `$ npm start` to start the React development server.
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
@@ -38,13 +27,9 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 
 ### Setting Up Your Users
 
-- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
-
 - To create a **superuser account**, use this command:
 
       $ python manage.py createsuperuser
-
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
 ### Type checks
 
