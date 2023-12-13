@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+@import "bootstrap/scss/bootstrap";
+
+body {
+  background: rgba(9, 10, 17, 0.8);
+}
+
+.h-100vh {
+  height: 100vh;
+}
+input.ng-dirty.ng-invalid {
+  border: red solid thin;
+}
