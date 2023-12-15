@@ -1,14 +1,15 @@
 # Propylon Document Manager Assessment
 
-The Propylon Document Management Technical Assessment is a simple (and incomplete) web application consisting of a basic API backend and a React based client.  This API/client can be used as a bootstrap to implement the specific features requested in the assessment description. 
+The Propylon Document Management Technical Assessment is a simple (and incomplete) web application consisting of a basic API backend and a React based client. This API/client can be used as a bootstrap to implement the specific features requested in the assessment description.
 
 ## Getting Started
+
 1. [Install Direnv](https://direnv.net/docs/installation.html)
 2. [Install Pipenv](https://pipenv.pypa.io/en/latest/installation/)
 3. This project requires Python 3.11 so you will need to ensure that this version of Python is installed on your OS before building the virtual environment.
 4. `$ cp example.env .envrc`
 5. `$ direnv allow .`
-6. `$ pipenv install -r requirements/local.txt`.  If Python 3.11 is not the default Python version on your system you may need to explicitly create the virtual environment (`$ python3.11 -m venv .venv`) prior to running the install command. 
+6. `$ pipenv install -r requirements/local.txt`. If Python 3.11 is not the default Python version on your system you may need to explicitly create the virtual environment (`$ python3.11 -m venv .venv`) prior to running the install command.
 7. `$ pipenv run python manage.py migrate` to create the database.
 8. `$ pipenv run python manage.py load_file_fixtures` to create the fixture file versions.
 9. `$ pipenv run python manage.py runserver 0.0.0.0:8001` to start the development server on port 8001.
@@ -47,4 +48,14 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 
 #### Running tests with pytest
 
-    $ pytest
+    $ pytest --cov=propylon_document_manager
+
+## Make Commands
+
+#### Start Backend
+
+    $ make start
+
+#### Run Tests with Coverage Report
+
+    $ make test

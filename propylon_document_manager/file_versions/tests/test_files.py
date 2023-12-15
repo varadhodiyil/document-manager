@@ -1,26 +1,15 @@
-import tempfile
-import pytest
 import json
+import tempfile
+
+import pytest
 from rest_framework.test import APIRequestFactory
 
 from propylon_document_manager.file_versions.api.views import FilesViewSet
-from propylon_document_manager.users.tests.factories import UserFactory, Faker
-from propylon_document_manager.file_versions.models import Files
+from propylon_document_manager.file_versions.tests.base import TestFileVersions
 
 
 @pytest.mark.django_db
-class TestUserViewSet:
-    @pytest.fixture
-    def api_rf(self) -> APIRequestFactory:
-        return APIRequestFactory()
-
-    def setup_method(self, method):
-        self.user = UserFactory()
-        self.second_user = UserFactory()
-
-        self.user_file = Files.objects.create(file_name=Faker("name"), user=self.user)
-        self.second_user_file = Files.objects.create(file_name=Faker("name"), user=self.second_user)
-
+class TestUserViewSet(TestFileVersions):
     @pytest.mark.django_db
     def test_get_all_files_user(self, api_rf: APIRequestFactory):
         """Test List all Files"""
@@ -68,7 +57,7 @@ class TestUserViewSet:
         assert response_data["id"] == self.user_file.id
 
     @pytest.mark.django_db
-    def test_get_file_user(self, api_rf: APIRequestFactory):
+    def test_get_file_user_invalid_user(self, api_rf: APIRequestFactory):
         """Get Individual File, Invalid User"""
         view = FilesViewSet.as_view({"get": "retrieve"})
         request = api_rf.get("/files")
@@ -86,14 +75,18 @@ class TestUserViewSet:
         """Create Files"""
         view = FilesViewSet.as_view({"post": "create"})
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            tmp.write(b"Hello world!")
+            tmp.write(b"Version 1")
             tmp.close()
             with open(tmp.name, "rb") as test_file:
-                request = api_rf.post("/files/", {"uploaded_file": test_file}, format="multipart")
+                request = api_rf.post(
+                    "/files/",
+                    {"uploaded_file": test_file},
+                    format="multipart",
+                )
                 request.user = self.user
 
                 view.request = request
-                response = view(request, id=self.second_user_file.id).render()
+                response = view(request).render()
 
                 response_data = json.loads(response.content)
                 assert response.status_code == 201
@@ -142,7 +135,7 @@ class TestUserViewSet:
         assert response_data == {"detail": "Not found."}
 
     @pytest.mark.django_db
-    def test_delete_user(self, api_rf: APIRequestFactory):
+    def test_delete_user_invalid_user(self, api_rf: APIRequestFactory):
         """Delete Incorrect User File"""
         view = FilesViewSet.as_view({"delete": "destroy"})
         request = api_rf.delete("/files")
@@ -152,3 +145,27 @@ class TestUserViewSet:
         response = view(request, id=self.user_file.id).render()
 
         assert response.status_code == 404
+
+    @pytest.mark.django_db
+    def test_update_file_user(self, api_rf: APIRequestFactory):
+        """Create Files"""
+        view = FilesViewSet.as_view({"put": "update"})
+        with tempfile.NamedTemporaryFile(delete=False) as tmp:
+            tmp.write(b"Version 2")
+            tmp.close()
+            with open(tmp.name, "rb") as test_file:
+                request = api_rf.put(
+                    "/files/",
+                    {"uploaded_file": test_file},
+                    format="multipart",
+                )
+                request.user = self.user
+
+                view.request = request
+                response = view(request, id=self.user_file.id).render()
+
+                response_data = json.loads(response.content)
+
+                assert response.status_code == 200
+                assert response_data["id"] == self.user_file.id
+                assert response_data["current_version"] == self.user_file.current_version + 1

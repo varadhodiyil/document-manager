@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from propylon_document_manager.file_versions.models import FileVersion, Files
+
+from propylon_document_manager.file_versions.models import Files, FileVersion
 from propylon_document_manager.users.models import User
 
 file_versions = [
