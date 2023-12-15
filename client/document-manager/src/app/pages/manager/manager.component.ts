@@ -2,11 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-manager',
-  standalone: true,
-  imports: [],
-  templateUrl: './manager.component.html',
-  styleUrl: './manager.component.scss'
-})
-export class ManagerComponent {
 
-}
+  templateUrl: './manager.component.html',
+  styleUrl: './manager.component.scss',
+})
+export class ManagerComponent {}

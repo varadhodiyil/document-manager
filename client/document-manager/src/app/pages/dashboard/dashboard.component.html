@@ -1,1 +1,49 @@
-<p>dashboard works!</p>
+<div class="row mx-5">
+  <div class="col-1"></div>
+  <div class="row">
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn btn-outline-success" (click)="openUploadModel()">
+        Add File
+      </button>
+    </div>
+
+    <table class="table col table-striped">
+      <thead>
+        <tr>
+          <th scope="col">File Name</th>
+          <th scope="col">Current Version</th>
+          <th scope="col">Added At</th>
+          <th scope="col">Updated At</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (file of fileResponse; track file.id; let i = $index) {
+        <tr>
+          <td>{{ file.file_name }}</td>
+          <td>
+            {{ file.current_version }}
+          </td>
+          <td>{{ file.added_at | date : "medium" }}</td>
+          <td>{{ file.updated_at | date : "medium" }}</td>
+          <td>
+            <button
+              class="btn btn-outline-success ms-2"
+              (click)="viewVersion(file.id)"
+            >
+              <i class="fa-regular fa-eye"></i>
+            </button>
+            <button
+              class="btn btn-outline-danger mx-2"
+              (click)="deleteFile(file.id)"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="col-1"></div>
+</div>

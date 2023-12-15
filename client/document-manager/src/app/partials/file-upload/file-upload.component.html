@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add new {{ uploadType }}</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="modal-body">
+  <div class="row mt-3 text-light">
+    <div class="col-md-12">
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Upload file </label>
+        <input
+          (change)="this.onFilechange($event)"
+          class="form-control"
+          type="file"
+          id="formFile"
+        />
+        <button
+          (click)="this.upload()"
+          type="button"
+          class="btn btn-primary mt-3 d-flex justify-content-end"
+          [disabled]="!file"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

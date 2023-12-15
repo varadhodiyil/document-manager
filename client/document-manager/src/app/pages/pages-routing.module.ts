@@ -22,6 +22,10 @@ const routes: Routes = [
         path: ':id/versions',
         component: VersionsComponent,
       },
+      {
+        path: '**',
+        redirectTo: 'dashboard',
+      },
     ],
   },
 ];

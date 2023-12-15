@@ -1,1 +1,19 @@
-<p>base works!</p>
+<header class="header">
+  <nav class="navbar navbar-light">
+    <a class="navbar-brand text-light mx-2">Document Versioning</a>
+    <div class="row m-2">
+      <div class="text-light text-lg col">{{ user?.email }}</div>
+      <button
+        class="btn btn-sm btn-outline-light col m-2 my-sm-0"
+        type="button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="container-fluid my-5">
+  <router-outlet></router-outlet>
+</div>

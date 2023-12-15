@@ -68,3 +68,6 @@ class FileVersionViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet, D
             instance.file.current_version = instance.file.current_version - 1
             instance.file.save()
         instance.delete()
+
+        if instance.file.current_version == 0:
+            instance.file.delete()
