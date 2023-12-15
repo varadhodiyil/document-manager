@@ -21,6 +21,10 @@ const routes: Routes = [
         path: 'sign-up',
         component: RegisterComponent,
       },
+      {
+        path: '**',
+        redirectTo: 'sign-in',
+      },
     ],
   },
 ];

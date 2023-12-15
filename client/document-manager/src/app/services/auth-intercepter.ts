@@ -15,11 +15,14 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private router: Router, private auth: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const request = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${this.auth.getToken()}`,
-      },
-    });
+    let request = req;
+    if (this.auth.getToken()) {
+      request = req.clone({
+        setHeaders: {
+          Authorization: `Token ${this.auth.getToken()}`,
+        },
+      });
+    }
 
     return next.handle(request).pipe(
       tap({
@@ -27,7 +30,8 @@ export class TokenInterceptor implements HttpInterceptor {
 
         error: (_error) => {
           if (_error instanceof HttpErrorResponse) {
-            if (_error.status === 401) {
+            if (_error.status === 401 || _error.status === 403) {
+              this.auth.logout();
               this.router.navigate(['/auth/login']);
             }
           }

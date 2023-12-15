@@ -14,8 +14,21 @@ class FileVersionSerializer(serializers.ModelSerializer):
 
 class FilesSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    uploaded_file = serializers.FileField(write_only=True)
     versions = FileVersionSerializer(many=True, read_only=True)
+    file_name = serializers.HiddenField(default=None)
+    current_version = serializers.ReadOnlyField()
 
     class Meta:
         model = Files
-        fields = ["file_name", "added_at", "updated_at", "id", "user", "versions"]
+        fields = [
+            "file_name",
+            "added_at",
+            "updated_at",
+            "id",
+            "user",
+            "versions",
+            "uploaded_file",
+            "current_version",
+            "file_name",
+        ]

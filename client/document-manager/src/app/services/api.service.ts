@@ -6,9 +6,14 @@ import { Login } from './types';
   providedIn: 'root',
 })
 export class ApiService {
+  protected BASE = environment.host;
+  protected API_BASE = `${this.BASE}/api`;
   constructor(private httpClient: HttpClient) {}
 
   login(loginParam: Login) {
-    return this.httpClient.post(`${environment.host}/auth-token/`, loginParam);
+    return this.httpClient.post(`${this.BASE}/auth-token/`, loginParam);
+  }
+  me() {
+    return this.httpClient.get(`${this.API_BASE}/users/me`);
   }
 }

@@ -22,6 +22,7 @@ urlpatterns = [
     ),
     path("users/", include("propylon_document_manager.users.urls")),
     path("admin/", admin.site.urls),
+    path("auth/", include("django.contrib.auth.urls")),
 ]
 
 if settings.DEBUG:
