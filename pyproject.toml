@@ -60,6 +60,8 @@ load-plugins = [
     "pylint_django",
 ]
 django-settings-module = "config.settings.local"
+ignore = "migrations,tests"
+
 
 [tool.pylint.FORMAT]
 max-line-length = 119

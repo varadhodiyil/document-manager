@@ -26,7 +26,7 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         assert self.request.user.is_authenticated  # for mypy to know that the user is authenticated
         return self.request.user.get_absolute_url()
 
-    def get_object(self):
+    def get_object(self, *args, **kwargs):
         return self.request.user
 
 
@@ -36,7 +36,7 @@ user_update_view = UserUpdateView.as_view()
 class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
-    def get_redirect_url(self):
+    def get_redirect_url(self, *args, **kwargs):
         return reverse("users:detail", kwargs={"pk": self.request.user.pk})
 
 
