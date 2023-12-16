@@ -18,15 +18,31 @@
           type="file"
           id="formFile"
         />
-        <button
-          (click)="this.upload()"
-          type="button"
-          class="btn btn-primary mt-3 d-flex justify-content-end"
-          [disabled]="!file"
-        >
-          Upload
-        </button>
       </div>
+      <div class="row g-3 align-items-center mb-3" *ngIf="showURL">
+        <div class="col-3 text-dark">
+          <label for="url" class="col-form-label">URL</label>
+        </div>
+        <div class="col-9">
+          <input
+            type="text"
+            [formControl]="urlControl"
+            class="form-control"
+            aria-describedby="passwordHelpInline"
+          />
+        </div>
+      </div>
+      <div class="error">
+        <span *ngFor="let err of errors">{{ err }}</span>
+      </div>
+      <button
+        (click)="this.upload()"
+        type="button"
+        class="btn btn-primary mt-3 d-flex justify-content-end"
+        [disabled]="!shouldEnable()"
+      >
+        Upload
+      </button>
     </div>
   </div>
 </div>

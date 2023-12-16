@@ -31,9 +31,10 @@ export class ApiService {
     return this.httpClient.delete(`${this.API_BASE}/file_versions/${id}`);
   }
 
-  addFile(file: File) {
+  addFile(file: File, file_url: string) {
     let formParams = new FormData();
     formParams.append('uploaded_file', file);
+    formParams.append('file_url', file_url);
     return this.httpClient.post(`${this.API_BASE}/files/`, formParams);
   }
 

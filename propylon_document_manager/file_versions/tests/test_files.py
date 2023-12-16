@@ -1,11 +1,13 @@
 import json
 import tempfile
-
+import os
 import pytest
 from rest_framework.test import APIRequestFactory
 
 from propylon_document_manager.file_versions.api.views import FilesViewSet
 from propylon_document_manager.file_versions.tests.base import TestFileVersions
+
+from django.conf import settings
 
 
 @pytest.mark.django_db
@@ -29,6 +31,8 @@ class TestUserViewSet(TestFileVersions):
                 "id": 1,
                 "versions": [],
                 "current_version": 1,
+                "file_url": "/documents/test-1/test.ext",
+                "file_name": "file_1.ext",
             }
         ]
         for res in response_data:
@@ -52,6 +56,8 @@ class TestUserViewSet(TestFileVersions):
             "id": 1,
             "versions": [],
             "current_version": 1,
+            "file_url": "/documents/test-1/test.ext",
+            "file_name": "file_1.ext",
         }
 
         assert response_data["id"] == self.user_file.id
@@ -74,13 +80,16 @@ class TestUserViewSet(TestFileVersions):
     def test_create_new_file_user(self, api_rf: APIRequestFactory):
         """Create Files"""
         view = FilesViewSet.as_view({"post": "create"})
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
+
+        with tempfile.NamedTemporaryFile(
+            delete=False,
+        ) as tmp:
             tmp.write(b"Version 1")
             tmp.close()
             with open(tmp.name, "rb") as test_file:
                 request = api_rf.post(
                     "/files/",
-                    {"uploaded_file": test_file},
+                    {"uploaded_file": test_file, "file_url": "/documents/file.pdf"},
                     format="multipart",
                 )
                 request.user = self.user
@@ -93,6 +102,8 @@ class TestUserViewSet(TestFileVersions):
                 assert response_data["id"] == 3
                 assert response_data["current_version"] == 1
                 new_file_id = response_data["id"]
+            tmp.close()
+
         # Test Get After Create
         view = FilesViewSet.as_view({"get": "list"})
         request = api_rf.get("/files/")
@@ -156,7 +167,7 @@ class TestUserViewSet(TestFileVersions):
             with open(tmp.name, "rb") as test_file:
                 request = api_rf.put(
                     "/files/",
-                    {"uploaded_file": test_file},
+                    {"uploaded_file": test_file, "file_url": self.user_file.file_url},
                     format="multipart",
                 )
                 request.user = self.user

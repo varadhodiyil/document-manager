@@ -1,25 +1,51 @@
 # pylint: disable=W0201
+import json
 import tempfile
 import pytest
-import json
+from hashlib import sha1
 from rest_framework.test import APIRequestFactory
+from propylon_document_manager.file_versions.api.utils import generate_hash
 
 from propylon_document_manager.file_versions.models import FileVersion
 from propylon_document_manager.file_versions.tests.base import TestFileVersions
 from propylon_document_manager.file_versions.api.views import FileVersionViewSet, FilesViewSet
+from django.core.files.base import ContentFile
+
+
+def _gen_content(version: int) -> str:
+    return f"Version {version}"
+
+
+def make_file(version: int):
+    return ContentFile(_gen_content(version))
 
 
 @pytest.mark.django_db
 class TestUserViewSet(TestFileVersions):
     def setup_method(self, method):
         super().setup_method(method)
-        self.user_file_version_1 = FileVersion.objects.create(file=self.user_file, version_number=1)
-        self.user_file_version_2 = FileVersion.objects.create(file=self.user_file, version_number=2)
+
+        self.user_file_version_1 = FileVersion.objects.create(
+            file=self.user_file, version_number=1, uploaded_file=make_file(1), file_hash=generate_hash(make_file(1))
+        )
+        self.user_file_version_2 = FileVersion.objects.create(
+            file=self.user_file, version_number=2, uploaded_file=make_file(2), file_hash=generate_hash(make_file(2))
+        )
         self.user_file.current_version = 2
         self.user_file.save()
 
-        self.second_user_file_version_1 = FileVersion.objects.create(file=self.second_user_file, version_number=1)
-        self.second_user_file_version_2 = FileVersion.objects.create(file=self.second_user_file, version_number=2)
+        self.second_user_file_version_1 = FileVersion.objects.create(
+            file=self.second_user_file,
+            version_number=1,
+            uploaded_file=make_file(1),
+            file_hash=generate_hash(make_file(1)),
+        )
+        self.second_user_file_version_2 = FileVersion.objects.create(
+            file=self.second_user_file,
+            version_number=2,
+            uploaded_file=make_file(2),
+            file_hash=generate_hash(make_file(2)),
+        )
         self.second_user_file.current_version = 2
         self.second_user_file.save()
 
@@ -49,6 +75,7 @@ class TestUserViewSet(TestFileVersions):
                         "added_at": self.user_file_version_1.added_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                         "updated_at": self.user_file_version_1.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                         "file": self.user_file.id,
+                        "uploaded_file": self.user_file_version_1.uploaded_file,
                     },
                     {
                         "id": self.user_file_version_2.id,
@@ -56,9 +83,12 @@ class TestUserViewSet(TestFileVersions):
                         "added_at": self.user_file_version_2.added_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                         "updated_at": self.user_file_version_2.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                         "file": self.user_file.id,
+                        "uploaded_file": self.user_file_version_2.uploaded_file,
                     },
                 ],
                 "current_version": 2,
+                "file_url": self.user_file.file_url,
+                "file_name": self.user_file.file_name,
             }
         ]
 
@@ -86,6 +116,7 @@ class TestUserViewSet(TestFileVersions):
             "id": self.user_file_version_1.id,
             "version_number": self.user_file_version_1.version_number,
             "file": self.user_file.id,
+            "uploaded_file": None,
         }
 
         assert response_data["id"] == self.user_file.id
@@ -147,3 +178,23 @@ class TestUserViewSet(TestFileVersions):
                 assert response.status_code == 201
                 assert response_data["id"] == 5
                 assert response_data["version_number"] == self.second_user_file.current_version + 1
+
+    @pytest.mark.django_db
+    def test_create_new_file_same_content_version_user(self, api_rf: APIRequestFactory):
+        """Create File Version with Same content"""
+        view = FileVersionViewSet.as_view({"post": "create"})
+
+        request = api_rf.post(
+            "/file_versions/",
+            {"uploaded_file": make_file(1), "file": self.second_user_file.id},
+            format="multipart",
+        )
+        request.user = self.user
+
+        view.request = request
+        response = view(request, id=self.second_user_file.id).render()
+
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 400
+        assert response_data == {"non_field_errors": ["File Version already exits"]}

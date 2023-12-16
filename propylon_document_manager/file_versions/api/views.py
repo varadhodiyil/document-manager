@@ -32,7 +32,8 @@ class FilesViewSet(
         file = serializer.save(file_name=uploaded_file.name)
         fv_serializer = FileVersionSerializer(data={"file": file.id, "uploaded_file": uploaded_file})
         fv_serializer.is_valid(raise_exception=True)
-        fv_serializer.save(version_number=1)
+
+        fv_serializer.save(version_number=file.current_version)
 
     def perform_update(self, serializer) -> None:
         uploaded_file = serializer.validated_data.pop("uploaded_file")
@@ -59,7 +60,7 @@ class FileVersionViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet, D
 
         new_version = file.current_version + 1
         serializer.validated_data["version_number"] = new_version
-
+        file.current_version = new_version
         serializer.save()
         file.save()
 
