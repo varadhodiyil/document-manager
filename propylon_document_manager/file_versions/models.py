@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from propylon_document_manager.file_versions.api.utils import generate_hash, get_upload_path
+from propylon_document_manager.file_versions.api.utils import get_upload_path
 
 
 class Files(models.Model):

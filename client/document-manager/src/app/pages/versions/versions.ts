@@ -5,6 +5,7 @@ export interface Files {
   versions: Version[];
   current_version: number;
   file_name: string;
+  file_url: string;
 }
 
 export interface Version {
@@ -13,4 +14,5 @@ export interface Version {
   added_at: string;
   updated_at: string;
   file: number;
+  file_name: string;
 }

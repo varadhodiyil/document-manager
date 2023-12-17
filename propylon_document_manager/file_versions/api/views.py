@@ -1,3 +1,5 @@
+from typing import Any
+import os
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from rest_framework.mixins import (
@@ -7,11 +9,19 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
+from django.conf import settings
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from propylon_document_manager.file_versions.api.serializers import FilesSerializer, FileVersionSerializer
 from propylon_document_manager.file_versions.models import Files, FileVersion
 from propylon_document_manager.file_versions.permissions import IsFileOwner
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 
 
 class FilesViewSet(
@@ -72,3 +82,25 @@ class FileVersionViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet, D
 
         if instance.file.current_version == 0:
             instance.file.delete()
+
+
+class DownloadView(GenericAPIView):
+    permission_classes = [IsFileOwner]
+    serializer_class = FileVersionSerializer
+    queryset = Files.objects.all()
+
+    def get_queryset(self) -> QuerySet[Any]:
+        base = self.request.path
+        return Files.objects.filter(file_url=base, user=self.request.user)
+
+    def get(self, request):
+        qs = self.get_queryset()
+        if not qs:
+            return Response({"status": False}, status=HTTP_403_FORBIDDEN)
+        file_model = qs.get()
+        version = request.GET.get("revision", file_model.current_version)
+        file_version = get_object_or_404(FileVersion.objects.filter(file=file_model, version_number=version))
+
+        media_file = os.path.join(settings.MEDIA_ROOT, file_version.uploaded_file.name)
+        file = open(media_file, "rb")
+        return FileResponse(file, as_attachment=True, filename=os.path.basename(media_file))

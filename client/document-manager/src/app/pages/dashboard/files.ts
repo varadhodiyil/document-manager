@@ -7,6 +7,7 @@ export interface Files {
   versions: Version[];
   current_version: number;
   file_name: string;
+  file_url: string;
 }
 
 export interface Version {

@@ -34,10 +34,7 @@
           </td>
           <td>{{ fileVersion.updated_at | date : "medium" }}</td>
           <td>
-            <button
-              class="btn btn-outline-primary"
-              (click)="download(fileVersion.id)"
-            >
+            <button class="btn btn-outline-primary" (click)="download(i)">
               <i class="fa-solid fa-cloud-arrow-down"></i>
             </button>
             <button

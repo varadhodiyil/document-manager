@@ -4,18 +4,14 @@ The Propylon Document Management Technical Assessment is a simple (and incomplet
 
 ## Getting Started
 
-1. [Install Direnv](https://direnv.net/docs/installation.html)
-2. [Install Pipenv](https://pipenv.pypa.io/en/latest/installation/)
-3. This project requires Python 3.11 so you will need to ensure that this version of Python is installed on your OS before building the virtual environment.
-4. `$ cp example.env .envrc`
-5. `$ direnv allow .`
-6. `$ pipenv install -r requirements/local.txt`. If Python 3.11 is not the default Python version on your system you may need to explicitly create the virtual environment (`$ python3.11 -m venv .venv`) prior to running the install command.
-7. `$ pipenv run python manage.py migrate` to create the database.
-8. `$ pipenv run python manage.py load_file_fixtures` to create the fixture file versions.
-9. `$ pipenv run python manage.py runserver 0.0.0.0:8001` to start the development server on port 8001.
-10. Navigate to the client/doc-manager directory.
-11. `$ npm install` to install the dependencies.
-12. `$ npm start` to start the React development server.
+1. Install [Docker](https://www.docker.com/products/docker-desktop/)
+2. `$ make build`. This will spin up docker image for the Backend Server
+3. `$ make migrate` to create the database.
+4. `$ make load_file_fixtures` to create the fixture file versions.
+5. `$ make start` to start the development server on port 8001.
+6. Navigate to the client/document-manager.
+7. `$ npm install` to install the dependencies.
+8. `$ ng s` to start the Angular development server.
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
@@ -36,19 +32,13 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 
 Running type checks with mypy:
 
-    $ mypy propylon_document_manager
+    $ make mypy
 
 ### Test coverage
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
-
 #### Running tests with pytest
 
-    $ pytest --cov=propylon_document_manager
+    $ make test
 
 ## Make Commands
 
@@ -59,3 +49,12 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 #### Run Tests with Coverage Report
 
     $ make test
+
+## Schema For files
+
+![schema](docs/schema.png)
+
+- A user Can have multiple files
+- A File can have any number of versions
+- Content of file version needs to be unique for each file object
+- Each file should have atleast file Version attached to it

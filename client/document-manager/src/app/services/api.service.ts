@@ -13,6 +13,9 @@ export class ApiService {
   login(loginParam: Login) {
     return this.httpClient.post(`${this.BASE}/auth-token/`, loginParam);
   }
+  register(registerParam: Login) {
+    return this.httpClient.post(`${this.API_BASE}/register/`, registerParam);
+  }
   me() {
     return this.httpClient.get(`${this.API_BASE}/users/me/`);
   }
@@ -43,5 +46,12 @@ export class ApiService {
     formParams.append('uploaded_file', file);
     formParams.append('file', fileId.toString());
     return this.httpClient.post(`${this.API_BASE}/file_versions/`, formParams);
+  }
+
+  viewDocument(document_url: string, version: number) {
+    return this.httpClient.get(
+      `${this.BASE}${document_url}?revision=${version}`,
+      { responseType: 'blob', observe: 'response' }
+    );
   }
 }

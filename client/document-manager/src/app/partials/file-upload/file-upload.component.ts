@@ -16,7 +16,7 @@ export class FileUploadComponent implements OnDestroy, OnInit {
   @Input() id: number | null = null;
   urlControl = new FormControl('', Validators.required);
   showURL = this.uploadType === UploadType.FILE;
-  errors: [string] = [''];
+  errors = new Array();
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -27,12 +27,21 @@ export class FileUploadComponent implements OnDestroy, OnInit {
   }
   ngOnInit(): void {
     this.showURL = this.uploadType === UploadType.FILE;
+    this.urlControl.valueChanges.subscribe({
+      next: (v) => {
+        if (!v?.startsWith('/documents')) {
+          this.urlControl.setValue(`/documents/${v}`);
+        }
+      },
+    });
   }
 
   onFilechange(event: any) {
     this.file = event.target.files[0];
   }
-
+  _handleError(err: any) {
+    this.errors = Object.keys(err).map((e) => `${e} --- ${err[e]}`);
+  }
   upload() {
     if (this.file) {
       if (this.uploadType === UploadType.FILE) {
@@ -41,6 +50,7 @@ export class FileUploadComponent implements OnDestroy, OnInit {
         }
         this.apiService.addFile(this.file, this.urlControl.value).subscribe({
           next: (_d) => this.activeModal.close(),
+          error: (e) => this._handleError(e.error),
         });
       } else if (this.uploadType === UploadType.Version) {
         if (!this.id) {
@@ -48,6 +58,7 @@ export class FileUploadComponent implements OnDestroy, OnInit {
         }
         this.apiService.addFileVersion(this.file, this.id).subscribe({
           next: (e) => this.activeModal.close(),
+          error: (e) => this._handleError(e.error),
         });
       }
     } else {

@@ -47,8 +47,12 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "propylon_document_manager.sqlite",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "propylon",
+        "USER": "root",
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "HOST": "dB",
+        "PORT": "3306",
     }
 }
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD

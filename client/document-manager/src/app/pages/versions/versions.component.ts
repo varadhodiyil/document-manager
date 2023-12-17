@@ -33,8 +33,27 @@ export class VersionsComponent implements OnInit {
       error: (e) => this.activeModal.close(),
     });
   }
-  download(versionId: number) {
-    console.log(versionId);
+  download(idx: number) {
+    const fileVersion = this.fileVersions?.versions[idx];
+
+    if (!fileVersion || !this.fileVersions) {
+      return;
+    }
+    this.apiService
+      .viewDocument(this.fileVersions.file_url, fileVersion?.version_number)
+      .subscribe({
+        next: (response: any) => {
+          const downloadLink = document.createElement('a');
+          downloadLink.href = URL.createObjectURL(
+            new Blob([response.body], { type: response.body.type })
+          );
+
+          const fileName = this.fileVersions?.file_name || 'test';
+
+          downloadLink.download = fileName;
+          downloadLink.click();
+        },
+      });
   }
 
   deleteVersion(versionId: number) {
