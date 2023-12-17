@@ -10,7 +10,7 @@ python_files = [
 # ==== Coverage ====
 [tool.coverage.run]
 include = ["propylon_document_manager/**"]
-omit = ["*/migrations/*", "*/tests/*"]
+omit = ["*/migrations/*", "*/tests/*", "*/media/*"]
 plugins = ["django_coverage_plugin"]
 
 

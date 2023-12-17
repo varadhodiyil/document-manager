@@ -1,9 +1,10 @@
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
+
 from propylon_document_manager.file_versions.api.utils import generate_hash
 from propylon_document_manager.file_versions.models import Files, FileVersion
 from propylon_document_manager.users.models import User
-from django.db.utils import IntegrityError
 
 file_versions = [
     "bill_document",
