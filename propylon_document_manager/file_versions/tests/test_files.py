@@ -1,13 +1,13 @@
 import json
-import tempfile
 import os
+import tempfile
+
 import pytest
+from django.conf import settings
 from rest_framework.test import APIRequestFactory
 
 from propylon_document_manager.file_versions.api.views import FilesViewSet
 from propylon_document_manager.file_versions.tests.base import TestFileVersions
-
-from django.conf import settings
 
 
 @pytest.mark.django_db

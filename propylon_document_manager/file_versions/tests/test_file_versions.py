@@ -1,22 +1,23 @@
 # pylint: disable=W0201
 import json
 import tempfile
-import pytest
 from hashlib import sha1
-from rest_framework.test import APIRequestFactory
-from propylon_document_manager.file_versions.api.utils import generate_hash
 
+import pytest
+from django.core.files.base import ContentFile
+from rest_framework.test import APIRequestFactory
+
+from propylon_document_manager.file_versions.api.utils import generate_hash
+from propylon_document_manager.file_versions.api.views import FilesViewSet, FileVersionViewSet
 from propylon_document_manager.file_versions.models import FileVersion
 from propylon_document_manager.file_versions.tests.base import TestFileVersions
-from propylon_document_manager.file_versions.api.views import FileVersionViewSet, FilesViewSet
-from django.core.files.base import ContentFile
 
 
 def _gen_content(version: int) -> str:
     return f"Version {version}"
 
 
-def make_file(version: int):
+def make_file(version: int) -> ContentFile:
     return ContentFile(_gen_content(version))
 
 

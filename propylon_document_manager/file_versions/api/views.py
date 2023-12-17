@@ -1,7 +1,12 @@
-from typing import Any
 import os
+from typing import Any
+
+from django.conf import settings
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -9,19 +14,14 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from django.conf import settings
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
 from rest_framework.viewsets import GenericViewSet
 
 from propylon_document_manager.file_versions.api.serializers import FilesSerializer, FileVersionSerializer
 from propylon_document_manager.file_versions.models import Files, FileVersion
 from propylon_document_manager.file_versions.permissions import IsFileOwner
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN
-from django.http import FileResponse
-from django.shortcuts import get_object_or_404
 
 
 class FilesViewSet(

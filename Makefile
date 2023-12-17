@@ -39,8 +39,7 @@ lint:
 	@docker-compose run --rm $(SERVICE_NAME) pylint $(PROJECT_NAME)
 ## Runs tests. | Tests
 test:
-	@docker-compose up test
-	@docker-compose stop test
+	@docker-compose run --rm $(SERVICE_NAME) pytest $(PROJECT_NAME)
 
 migrate:
 	@docker-compose run --rm $(SERVICE_NAME) python manage.py migrate
@@ -50,3 +49,6 @@ makemigrations:
 
 phpmyadmin:
 	@docker-compose up phpmyadmin
+
+load_file_fixtures:
+	@docker-compose run --rm $(SERVICE_NAME) python manage.py load_file_fixtures

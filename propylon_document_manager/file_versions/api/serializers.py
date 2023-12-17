@@ -1,7 +1,8 @@
 from typing import Any
-from rest_framework import serializers
-from propylon_document_manager.file_versions.api.utils import generate_hash
 
+from rest_framework import serializers
+
+from propylon_document_manager.file_versions.api.utils import generate_hash
 from propylon_document_manager.file_versions.models import Files, FileVersion
 
 

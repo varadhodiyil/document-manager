@@ -30,3 +30,10 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 TEMPLATES[0]["OPTIONS"]["debug"] = True  # type: ignore # noqa: F405
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "propylon_document_manager.sqlite",
+    }
+}
