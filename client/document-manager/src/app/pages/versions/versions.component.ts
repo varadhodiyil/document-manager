@@ -48,7 +48,9 @@ export class VersionsComponent implements OnInit {
             new Blob([response.body], { type: response.body.type })
           );
 
-          const fileName = this.fileVersions?.file_name || 'test';
+          const fileName =
+            `version_${fileVersion.version_number}__${this.fileVersions?.file_name}` ||
+            'test';
 
           downloadLink.download = fileName;
           downloadLink.click();

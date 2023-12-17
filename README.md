@@ -39,7 +39,7 @@ The Propylon Document Management Technical Assessment is a simple (and incomplet
 
 4. `$ make migrate` to create the tables.
 
-5. `$ make start` to start the development server on port 8001.
+5. `$ make run` to start the development server on port 8001.
 6. Navigate to the client/document-manager.
 7. `$ npm install` to install the dependencies.
 8. `$ ng s` to start the [Angular](https://angular.io/) development server.
@@ -87,3 +87,9 @@ Running type checks with mypy:
 #### Run formatting (isort and then black)
 
     $ make formatter
+
+#### Database Administration
+
+    $ make phpmyadmin
+
+This spins up phymyadmin container. We can view , edit, create tables /db . Admin is available at : http://localhost:7700/
